@@ -3,7 +3,7 @@ project(clion_testdrive)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -g -std=gnu11 -O0")
-set(SOURCE_FILES main.c vendor/unity.c print_typedef.h print_vtable.h print_vtable.c)
+set(SOURCE_FILES main.c vendor/unity.c person_s.h print_vtable.h print_vtable.c n2t-assy/assy_symtable.h n2t-assy/assy_symtable.c n2t-assy/assy_translator.h n2t-assy/assy_translator.c n2t-assy/assy_parser.c n2t-assy/assy_parser.h n2t-assy/tests/assy_tests.h n2t-assy/assy_frontend.c n2t-assy/assy_frontend.h)
 
 message( STATUS "${PROJECT_SOURCE_DIR}/vendor" )
 

@@ -1,16 +1,16 @@
 #include <stdio.h>
 #include "print_vtable.h"
 
-GHashTable *print_funcs;
+GHashTable *funcs_hash;
 
 void check_print_fn(print_fn_type pf) { }
 
-void print_textlist_as_html(struct textlist_s *in) {
-    if (!print_funcs) {
-        print_funcs = g_hash_table_new(g_direct_hash, g_direct_equal);
+void print_person_frontend(struct person_s *in) {
+    if (!funcs_hash) {
+        funcs_hash = g_hash_table_new(g_direct_hash, g_direct_equal);
     }
 
-    print_fn_type printfn = g_hash_table_lookup(print_funcs, in->print);
+    print_fn_type printfn = g_hash_table_lookup(funcs_hash, in->print);
     if (printfn) {
         printfn(in);
         return;

@@ -1,9 +1,12 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <wchar.h>
+#include <string.h>
 //#include <stdlib.h>
 #include "vendor/unity.h"
 #include "print_vtable.h"
+#include "n2t-assy/assy_symtable.h"
+#include "n2t-assy/tests/assy_tests.h"
 
 
 #define foo_frontend(x) _Generic((x), \
@@ -67,10 +70,11 @@ static unsigned int hash_str(wchar_t const *str) {
 }
 
 
-static void printy_textlist(struct textlist_s *in) {
-    printf("<title>%s</title>\n", in->title);
+static void print_person_backend(struct person_s *in) {
+    printf("\nName: %s\n", in->name);
     for (int i=0; i < in->len; i++)
-        printf("  <li>%s</li>\n", in->items[i]);
+        printf("-  Book author for: %s\n", in->books[i]);
+
 }
 
 
@@ -84,14 +88,42 @@ int main() {
 //    overloading_demo();
 
 
-    struct textlist_s bens_books = {
-        .title="Ben's awesome coding books",
-        .items = (char*[]) { "Code Complete", "C Pocket Reference", "The Pragmatic Programmer" },
-        .len = 3
-    };
-    print_textlist_as_html(&bens_books);
-    print_hash_add(&bens_books, printy_textlist);
-    print_textlist_as_html(&bens_books);
+    //vtable demo
+//    struct person_s dennis = {
+//        .name="Dennis Ritchie",
+//        .books = (char*[]) { "The C Programming Language - 1978" },
+//        .len = 1
+//    };
+//    print_person_frontend(&dennis);
+//    printfn_vtable_add(&dennis, print_person_backend);
+//    print_person_frontend(&dennis);
+//
+//    struct person_s rob = {
+//         .name = "Rob Pike",
+//        .books = (char*[]) { "The Unix Programming Environment - 1982", "The Practice of Programming - 1999" },
+//        .len = 2
+//    };
+//    print_person_frontend(&rob);
+
+
+//    assy_symtable symtable;
+//    assy_symtable_new(&symtable);
+//    symtable.add("SYM1", 1);
+//    symtable.add("SYM2", 234);
+//    symtable.add("SYM3", 1995);
+//    printf("SYM3 = %i\n", symtable.get("SYM3"));
+
+
+//    char *line = "// by Nisan and Schocken, MIT Press.";
+//    char *line2 = "   D=M              // D = first number";
+//    char *idx = strstr(line, "//");
+//    if (idx) {
+//        printf("%i\n", idx - line);
+//    }
+
+
+    assy_tests_run();
+
 
     return 0;
 }

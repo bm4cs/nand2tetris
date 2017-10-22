@@ -2,19 +2,19 @@
 #define CLION_TESTDRIVE_PRINT_VTABLE_H
 
 #include <glib.h>
-#include "print_typedef.h"
+#include "person_s.h"
 
-extern GHashTable *print_funcs;
+extern GHashTable *funcs_hash;
 
-typedef void (*print_fn_type)(struct textlist_s*);
+typedef void (*print_fn_type)(struct person_s*);
 
 void check_print_fn(print_fn_type pf);
 
-#define print_hash_add(object, print_fn) { \
-    check_print_fn(print_fn); \
-    g_hash_table_insert(print_funcs, (object)->print, print_fn); \
+#define printfn_vtable_add(object, fn) { \
+    check_print_fn(fn); \
+    g_hash_table_insert(funcs_hash, (object)->print, fn); \
 }
 
-void print_textlist_as_html(struct textlist_s *in);
+void print_person_frontend(struct person_s *in);
 
 #endif
