@@ -20,6 +20,7 @@ void test_symtable(void) {
     TEST_ASSERT_TRUE(symtab.contains("SYM3"));
     TEST_ASSERT_FALSE(symtab.contains("FOO"));
     TEST_ASSERT_TRUE(symtab.contains("SCREEN"));
+    TEST_ASSERT_EQUAL_INT32(0, symtab.get("R0"));
 }
 
 void test_translator(void) {
@@ -35,6 +36,11 @@ void test_translator(void) {
     TEST_ASSERT_EQUAL_STRING("111", assy_translator_get_jump_bits("JMP"));
     TEST_ASSERT_EQUAL_STRING("010", assy_translator_get_jump_bits("JEQ"));
     TEST_ASSERT_EQUAL_STRING("000", assy_translator_get_jump_bits(NULL));
+
+    char *bitmap = assy_translator_get_a_instruction_bits(10);
+    TEST_ASSERT_EQUAL_STRING("0000000000001010", bitmap);
+
+    TEST_ASSERT_EQUAL_STRING("1110101010000000", assy_translator_get_c_instruction_bits("0", NULL, NULL));
 }
 
 void test_parser(void) {
@@ -69,11 +75,20 @@ void test_parser(void) {
 }
 
 void test_frontend(void) {
-    assy_frontend_init("../n2t-assy/tests/ben.asm", "../n2t-assy/tests/ben.out");
+    assy_frontend_init("../n2t-assy/tests/ben.asm", "../n2t-assy/tests/ben.hack");
     assy_frontend_first_pass();
     TEST_ASSERT_TRUE(assy_frontend_symtab.contains("FOO"));
     TEST_ASSERT_EQUAL_INT32(3, assy_frontend_symtab.get("FOO"));
+    assy_frontend_second_pass();
 }
+
+
+void test_frontend_two(void) {
+    assy_frontend_init("../n2t-assy/tests/max.asm", "../n2t-assy/tests/add.hack");
+    assy_frontend_first_pass();
+    assy_frontend_second_pass();
+}
+
 
 static void assy_tests_run() {
     UnityBegin("assy_tests.h");
@@ -81,6 +96,7 @@ static void assy_tests_run() {
     RUN_TEST(test_translator);
     RUN_TEST(test_parser);
     RUN_TEST(test_frontend);
+    RUN_TEST(test_frontend_two);
     UnityEnd();
 }
 

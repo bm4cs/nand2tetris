@@ -78,7 +78,7 @@ static void print_person_backend(struct person_s *in) {
 }
 
 
-int main() {
+int main(int argc, char *argv[]) {
 //    UnityBegin("main.c");
 //    RUN_TEST(test_hello_ben);
 //    UnityEnd();
@@ -122,8 +122,17 @@ int main() {
 //    }
 
 
-    assy_tests_run();
+    // nand2tetris assembler unit tests
+//    assy_tests_run();
 
 
-    return 0;
+    if (argc != 2) {
+        printf("clion_testdrive input.asm\n");
+        return 0;
+    }
+
+    char *infile = argv[1];
+    assy_frontend_init(infile, "path/to/output/file");
+    assy_frontend_first_pass();
+    assy_frontend_second_pass();
 }

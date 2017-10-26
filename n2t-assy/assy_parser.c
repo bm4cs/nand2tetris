@@ -36,6 +36,7 @@ _Bool assy_parser_read_next() {
 
 void assy_parser_reset() {
     current_line_index = current_address = 0;
+    first_pass = true;
 }
 
 char* assy_parser_get_symbol() {
@@ -131,11 +132,15 @@ void assy_parser_open_file(char *filename) {
         while (fgets(line, MAX_LINE_LENGTH, file)) {
             if (strstr(line, "//") && strstr(line, "//") - line == 0) continue;
             if (strlen(line) <= 1) continue;
+            if (strcmp(line, "\r\n") == 0) continue;
             cleanstr(line);
             GString *gsline = g_string_new(line);
             g_array_append_val(assy_parser_input_array, gsline);
         }
         fclose(file);
+    }
+    else {
+        printf("Error: could not open file\n");
     }
 }
 

@@ -13,9 +13,11 @@
 #include <glib.h>
 
 extern GHashTable *assy_symtable_hash;
+extern int32_t assy_symtable_next_available_variable_addr;
 
 typedef struct assy_symtable {
     void (*add)(char *name, int32_t address);
+    int32_t (*add_variable)(char *name);
     int32_t (*get)(char *name);
     _Bool (*contains)(char *name);
     void (*debug)();

@@ -1,6 +1,10 @@
 
 #include <string.h>
+#include <stdio.h>
 #include "assy_translator.h"
+
+char assy_translator_compute_buffer[16];
+char assy_translator_address_buffer[16];
 
 char* assy_translator_get_destination_bits(char *mnemonic) {
     if (!mnemonic) return "000";
@@ -62,3 +66,35 @@ char* assy_translator_get_jump_bits(char *mnemonic) {
     if (strcmp(mnemonic, "JMP") == 0) return "111";
     return -1;
 }
+
+
+int assy_translator_convert_dec_to_bin(int dec) {
+    if (dec == 0) return 0;
+    else return (dec % 2 + 10 * assy_translator_convert_dec_to_bin(dec / 2));
+}
+
+char* assy_translator_get_a_instruction_bits(int32_t address) {
+//    char assy_translator_address_buffer[16];
+    char buffer[15];
+    memset(&assy_translator_address_buffer, '0', sizeof(assy_translator_address_buffer));
+    memset(&buffer, 0, sizeof(buffer));
+
+    sprintf(&buffer, "%d", assy_translator_convert_dec_to_bin(address));
+
+    char *nextch = &assy_translator_address_buffer[sizeof(assy_translator_address_buffer)];
+    for (int i = strlen(buffer); i >= 0; --i) {
+        *nextch = buffer[i];
+        nextch--;
+    }
+    return assy_translator_address_buffer;
+}
+
+char* assy_translator_get_c_instruction_bits(char *comp, char *dest, char *jump) {
+    memset(&assy_translator_compute_buffer, '0', sizeof(assy_translator_compute_buffer));
+    sprintf(&assy_translator_compute_buffer, "111%s%s%s",
+            assy_translator_get_compute_bits(comp),
+            assy_translator_get_destination_bits(dest),
+            assy_translator_get_jump_bits(jump));
+    return assy_translator_compute_buffer;
+}
+

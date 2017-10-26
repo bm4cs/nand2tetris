@@ -3,7 +3,10 @@
 #include <stdio.h>
 #include "assy_symtable.h"
 
+#define BASE_RAM_ADDRESS_FOR_VARIABLES 16
+
 GHashTable *assy_symtable_hash;
+int32_t assy_symtable_next_available_variable_addr;
 
 _Bool assy_symtable_contains(char *name) {
     if (assy_symtable_hash) {
@@ -16,15 +19,7 @@ void assy_symtable_add(char *name, int32_t address) {
     if (!assy_symtable_hash) {
         assy_symtable_hash = g_hash_table_new(g_str_hash, g_str_equal);
         assy_symtable_load_predefined();
-
-        //take 2
-//        assy_symtable_hash = g_hash_table_new_full(g_str_hash,  /* Hash function  */
-//                g_str_equal, /* Comparator     */
-//                free_data,   /* Key destructor */
-//                free_data);  /* Val destructor */
-
-        // take 1
-        //assy_symtable_hash = g_hash_table_new(g_direct_hash, g_direct_equal);
+        assy_symtable_next_available_variable_addr = BASE_RAM_ADDRESS_FOR_VARIABLES;
     }
 
     if (assy_symtable_contains(name)) {
@@ -35,18 +30,18 @@ void assy_symtable_add(char *name, int32_t address) {
     g_hash_table_insert(assy_symtable_hash, name, address);
 }
 
+int32_t assy_symtable_add_variable(char *name) {
+    assy_symtable_add(name, assy_symtable_next_available_variable_addr);
+    return assy_symtable_next_available_variable_addr++;
+}
+
 int32_t *assy_symtable_get(char *name) {
     if (!assy_symtable_hash) {
         return -1;
     }
 
     int32_t addr = g_hash_table_lookup(assy_symtable_hash, name);
-
-    if (addr) {
-        return addr;
-    }
-
-    return -1;
+    return addr;
 }
 
 void assy_symtable_load_predefined() {
@@ -75,8 +70,6 @@ void assy_symtable_load_predefined() {
     assy_symtable_add("KBD", 24576);
 }
 
-
-
 void assy_symtable_debug() {
     printf("hash size %i\n", g_hash_table_size(assy_symtable_hash));
     GList *list = g_hash_table_get_keys(assy_symtable_hash);
@@ -92,9 +85,9 @@ void assy_symtable_debug() {
 
 void assy_symtable_new(assy_symtable *in) {
     in->add = assy_symtable_add;
+    in->add_variable = assy_symtable_add_variable;
     in->get = assy_symtable_get;
     in->contains = assy_symtable_contains;
     in->debug = assy_symtable_debug;
 //    assy_symtable_load_predefined();
 }
-
